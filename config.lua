@@ -36,6 +36,8 @@ disable_RSO_biter_spawning = false    -- if true, no biters will be spawned by R
 biter_ratio_segment=1      --the ratio components determining how many biters to spitters will be spawned
 spitter_ratio_segment=1    --eg. 1 and 1 -> equal number of biters and spitters,  10 and 1 -> 10 times as many biters to spitters
 
+config={}
+
 require("modsupport.vanilla")
 require("modsupport.vanilla_enemies")
 
