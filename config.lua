@@ -36,139 +36,142 @@ disable_RSO_biter_spawning = false    -- if true, no biters will be spawned by R
 biter_ratio_segment=1      --the ratio components determining how many biters to spitters will be spawned
 spitter_ratio_segment=1    --eg. 1 and 1 -> equal number of biters and spitters,  10 and 1 -> 10 times as many biters to spitters
 
-config={
-  ["iron-ore"] = {
-    type="resource-ore",
+require("modsupport.vanilla")
+require("modsupport.vanilla_enemies")
 
-    -- general spawn params
-    allotment=120, -- how common resource is
-    spawns_per_region={min=1, max=2}, --number of chunks
-    richness=10000,
+-- config={
+  -- ["iron-ore"] = {
+    -- type="resource-ore",
 
-    size={min=13, max=40}, -- rough radius of area, too high value can produce square shaped areas
+    -- -- general spawn params
+    -- allotment=120, -- how common resource is
+    -- spawns_per_region={min=1, max=2}, --number of chunks
+    -- richness=10000,
 
-    -- resource provided at starting location
-    -- probability: 1 = 100% chance to be in starting area
-    --              0 = resource is not in starting area
-    starting={richness=2000, size=17, probability=1},
+    -- size={min=13, max=40}, -- rough radius of area, too high value can produce square shaped areas
 
-    multi_resource_chance=0.13, -- absolute value
-    multi_resource={
-      ["iron-ore"] = 2, -- ["resource_name"] = allotment
-      ['copper-ore'] = 4,
-      ["coal"] = 8,
-      ["stone"] = 8,
-    }
-  },
-  ["copper-ore"] = {
-    type="resource-ore",
+    -- -- resource provided at starting location
+    -- -- probability: 1 = 100% chance to be in starting area
+    -- --              0 = resource is not in starting area
+    -- starting={richness=2000, size=17, probability=1},
 
-    allotment=120,
-    spawns_per_region={min=1, max=2},
-    richness=11000,
-    size={min=13, max=32},
+    -- multi_resource_chance=0.13, -- absolute value
+    -- multi_resource={
+      -- ["iron-ore"] = 2, -- ["resource_name"] = allotment
+      -- ['copper-ore'] = 4,
+      -- ["coal"] = 8,
+      -- ["stone"] = 8,
+    -- }
+  -- },
+  -- ["copper-ore"] = {
+    -- type="resource-ore",
 
-    starting={richness=1800, size=13, probability=1},
+    -- allotment=120,
+    -- spawns_per_region={min=1, max=2},
+    -- richness=11000,
+    -- size={min=13, max=32},
 
-    multi_resource_chance=0.13,
-    multi_resource={
-      ["iron-ore"] = 4,
-      ['copper-ore'] = 2,
-      ["coal"] = 8,
-      ["stone"] = 8,
-    }
-  },
-  ["coal"] = {
-    type="resource-ore",
+    -- starting={richness=1800, size=13, probability=1},
 
-    allotment=100,
+    -- multi_resource_chance=0.13,
+    -- multi_resource={
+      -- ["iron-ore"] = 4,
+      -- ['copper-ore'] = 2,
+      -- ["coal"] = 8,
+      -- ["stone"] = 8,
+    -- }
+  -- },
+  -- ["coal"] = {
+    -- type="resource-ore",
 
-    spawns_per_region={min=1, max=2},
-    size={min=13, max=24},
-    richness=11000,
+    -- allotment=100,
 
-    starting={richness=2500, size=12, probability=1},
+    -- spawns_per_region={min=1, max=2},
+    -- size={min=13, max=24},
+    -- richness=11000,
 
-    multi_resource_chance=0.13,
-    multi_resource={
-      ["iron-ore"] = 2,
-      ['copper-ore'] = 2,
-      ["coal"] = 8,
-      ["stone"] = 8,
-    }
-  },
-  ["stone"] = {
-    type="resource-ore",
+    -- starting={richness=2500, size=12, probability=1},
 
-    allotment=80,
-    spawns_per_region={min=1, max=2},
-    richness=9000,
-    size={min=11, max=27},
+    -- multi_resource_chance=0.13,
+    -- multi_resource={
+      -- ["iron-ore"] = 2,
+      -- ['copper-ore'] = 2,
+      -- ["coal"] = 8,
+      -- ["stone"] = 8,
+    -- }
+  -- },
+  -- ["stone"] = {
+    -- type="resource-ore",
 
-    starting={richness=1000, size=8, probability=1},
+    -- allotment=80,
+    -- spawns_per_region={min=1, max=2},
+    -- richness=9000,
+    -- size={min=11, max=27},
 
-    multi_resource_chance=0.13,
-    multi_resource={
-      ["iron-ore"] = 2,
-      ['copper-ore'] = 2,
-      ["coal"] = 8,
-      ["stone"] = 8,
-    }
-  },
+    -- starting={richness=1000, size=8, probability=1},
 
-  ["crude-oil"] = {
-    type="resource-liquid",
-    minimum_amount=2000,
-    allotment=80,
-    spawns_per_region={min=1, max=3},
-    richness={min=20000, max=70000}, -- total richness of site
-    size={min=2, max=5}, -- richness divided by this number
+    -- multi_resource_chance=0.13,
+    -- multi_resource={
+      -- ["iron-ore"] = 2,
+      -- ['copper-ore'] = 2,
+      -- ["coal"] = 8,
+      -- ["stone"] = 8,
+    -- }
+  -- },
 
-    starting={richness=14000, size=2, probability=1}
-  },
+  -- ["crude-oil"] = {
+    -- type="resource-liquid",
+    -- minimum_amount=2000,
+    -- allotment=80,
+    -- spawns_per_region={min=1, max=3},
+    -- richness={min=20000, max=70000}, -- total richness of site
+    -- size={min=2, max=5}, -- richness divided by this number
 
-  ["biter-spawner"] = {
-    type="entity",
-    force="enemy",
-    clear_range = {3, 3},
+    -- starting={richness=14000, size=2, probability=1}
+  -- },
 
-    spawns_per_region={min=2,max=5},
-    size={min=2,max=6},
-    size_per_region_factor=1.05,
-    richness=1,
+  -- ["biter-spawner"] = {
+    -- type="entity",
+    -- force="enemy",
+    -- clear_range = {3, 3},
 
-    absolute_probability=0.15, -- chance to spawn in region
-    probability_distance_factor=1.05, -- relative incress per region
-    max_probability_distance_factor=3.0, -- absolute value
+    -- spawns_per_region={min=2,max=5},
+    -- size={min=2,max=6},
+    -- size_per_region_factor=1.05,
+    -- richness=1,
 
-    along_resource_probability=0.40, -- chance to spawn in resource chunk anyway, absolute value. Can happen once per resource.
+    -- absolute_probability=0.15, -- chance to spawn in region
+    -- probability_distance_factor=1.05, -- relative incress per region
+    -- max_probability_distance_factor=3.0, -- absolute value
 
-    sub_spawn_probability=0.5,     -- chance for this entity to spawn anything from sub_spawns table, absolute value
-    sub_spawn_size={min=1, max=2}, -- in same chunk
-    sub_spawn_distance_factor=1.02,
-    sub_spawn_max_distance_factor=2,
-    sub_spawns={
-      ["small-worm-turret"]={
-        min_distance=2,
-        allotment=2000,
-        allotment_distance_factor=0.9,
-        clear_range = {1, 1},
-      },
-      ["medium-worm-turret"]={
-        min_distance=5,
-        allotment=1000,
-        allotment_distance_factor=1.05,
-        clear_range = {1, 1},
-      },
-      ["big-worm-turret"]={
-        min_distance=7,
-        allotment=1000,
-        allotment_distance_factor=1.15,
-        clear_range = {1, 1},
-      }
-    }
-  }
-}
+    -- along_resource_probability=0.40, -- chance to spawn in resource chunk anyway, absolute value. Can happen once per resource.
+
+    -- sub_spawn_probability=0.5,     -- chance for this entity to spawn anything from sub_spawns table, absolute value
+    -- sub_spawn_size={min=1, max=2}, -- in same chunk
+    -- sub_spawn_distance_factor=1.02,
+    -- sub_spawn_max_distance_factor=2,
+    -- sub_spawns={
+      -- ["small-worm-turret"]={
+        -- min_distance=2,
+        -- allotment=2000,
+        -- allotment_distance_factor=0.9,
+        -- clear_range = {1, 1},
+      -- },
+      -- ["medium-worm-turret"]={
+        -- min_distance=5,
+        -- allotment=1000,
+        -- allotment_distance_factor=1.05,
+        -- clear_range = {1, 1},
+      -- },
+      -- ["big-worm-turret"]={
+        -- min_distance=7,
+        -- allotment=1000,
+        -- allotment_distance_factor=1.15,
+        -- clear_range = {1, 1},
+      -- }
+    -- }
+  -- }
+-- }
 
 --[[ MODS SUPPORT ]]--
 -- Endless resources mod
@@ -720,7 +723,7 @@ end
 
 -- peace mod
 if remote.interfaces["peacemod"] then
-  require('modsupport/peacemod.lua')
+  require("modsupport.peacemod")
 end  
 
 --[[ commented due to absence in current version of F-Mod
