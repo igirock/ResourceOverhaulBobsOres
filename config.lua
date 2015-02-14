@@ -1,5 +1,5 @@
 require 'defines'
-debug_enabled = false
+debug_enabled = true
 
 
 region_size=7 -- alternative mean to control how further away resources would be, default - 256 tiles or 8 chunks

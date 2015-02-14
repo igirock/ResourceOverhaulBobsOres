@@ -542,6 +542,7 @@ local function prebuild_config_data()
   if index_is_built then return false end
   assoc_config = config
   config = {}
+	-- build additional indexed array to the associative array
   for res_name, res_conf in pairs(assoc_config) do
     res_conf.name = res_name
     config[#config+1] = res_conf
@@ -558,7 +559,7 @@ local function prebuild_config_data()
   
   local pr=0
   for index,v in pairs(config) do
-    if v.along_resource_probability then
+    if v.along_resource_probability then  
       v.along_resource_probability_range={min=pr, max=pr+v.along_resource_probability}
       pr=pr+v.along_resource_probability
     end
@@ -606,6 +607,7 @@ local function init()
     --game.player.character.insert{name = "car", count = 1}
     --game.player.character.insert{name = "car", count = 1}
     --game.player.character.insert{name = "resource-monitor", count = 1}
+		
     glob.debug_once = true
   end
 end
@@ -693,7 +695,7 @@ local function roll_region(c_x, c_y)
     
     end
 
-    -- roll for absolute_probability 
+    -- roll for absolute_probability - this rolls the enemies
     
     for index,v in pairs(config) do
       if v.absolute_probability then
@@ -922,5 +924,48 @@ remote.addinterface("RSO", {
   end
 })
 
+local function printResourceProbability(player)
+	-- prints the probability of each resource - how likely it is to be spawned in percent
+	-- this ignores the multi resource chance
+	player.print("Max allotment"..string.format("%.1f",max_allotment))
+	local sanityCheckAllotment = 0
+	for index,v in pairs(config) do
+		if v.type ~= "entity" then		-- ignore enemies - they don't have allotment set
+			if v.allotment then
+				local resProbability = (v.allotment/max_allotment) * 100
+				sanityCheckAllotment = sanityCheckAllotment + v.allotment
+				player.print("Resource: "..v.name.." Prob: "..string.format("%.1f",resProbability))
+			else
+				player.print("Reousrce: "..v.name.." Allotment not set")
+			end
+		end
+	end
+	
+	player.print("SanityCheck Allotment: "..string.format("%.1f", sanityCheckAllotment))
+	
+end
+
+local function checkForUnusedResources(player)
+-- find all resources and check if we have it in our config
+-- if not, tell the user that this resource won't be spawned (with RSO)
+	for prototypeName, prototype in pairs(game.entityprototypes) do
+		if prototype.type == "resource" then
+			if not assoc_config[prototypeName] then
+				player.print("The resource "..prototypeName.." is not configured in RSO.")
+				player.print("It won't be spawned!")
+			end
+		end
+	end
+end
+
+game.onevent(defines.events.onplayercreated, function(event)
+
+	local player = game.getplayer(event.playerindex)
+	checkForUnusedResources(player)
+	
+	if debug_enabled then
+		printResourceProbability(player)
+	end
+end)
 
 
