@@ -599,7 +599,7 @@ local function init()
   generate_seed()
   calculate_spawner_ratio()
   spawn_starting_resources()
-  
+	
   if debug_enabled and not glob.debug_once then
     --game.player.character.insert{name = "coal", count = 1000}
     --game.player.character.insert{name = "car", count = 1}
