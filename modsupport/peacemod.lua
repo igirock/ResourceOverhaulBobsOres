@@ -1,6 +1,4 @@
 -- peace mod
-
-  disable_RSO_biter_spawning = true   -- if the user has peacemod installed he probably doesn't want that RSO spawns them either.
   config["alien-ore"] = {
     type="resource-ore",
     allotment=10,
