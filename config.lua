@@ -43,52 +43,38 @@ require("modsupport.vanilla")  -- vanilla ore/liquids (no enemies)
 --[[ MODS SUPPORT ]]--
 if remote and game then
 
--- Endless resources mod
-if endless_resource_mode then
-  require("modsupport.endless_resource_mod")
-end
+	-- Endless resources mod
+	if endless_resource_mode then
+		require("modsupport.endless_resource_mod")
+	end
 
-if not remote.interfaces["peacemod"] then  -- if the user has peacemod installed he probably doesn't want that RSO spawns them either.
-  require("modsupport.vanilla_enemies")  
-end
+	if not remote.interfaces["peacemod"] then  -- if the user has peacemod installed he probably doesn't want that RSO spawns them either.
+		require("modsupport.vanilla_enemies")  
+	end
 
--- Roadworks mod
-if game.entityprototypes["RW_limestone"] then
-	require("modsupport.roadworks")
-end
+	-- Roadworks mod
+	if game.entityprototypes["RW_limestone"] then
+		require("modsupport.roadworks")
+	end
 
--- DyTech
--- i moved everything even the checks there, i think it's cleaner this way
-require("modsupport.dytech")
+	-- DyTech
+	-- i moved everything even the checks there, i think it's cleaner this way
+	require("modsupport.dytech")
 
 
--- BobOres
-if remote.interfaces["bobores"] then
-  require("modsupport.bobores")
-end
+	-- BobOres
+	if remote.interfaces["bobores"] then
+		require("modsupport.bobores")
+	end
 
--- peace mod
-if remote.interfaces["peacemod"] then
-  require("modsupport.peacemod")
-end  
+	-- peace mod
+	if remote.interfaces["peacemod"] then
+		require("modsupport.peacemod")
+	end  
 
---[[ commented due to absence in current version of F-Mod
-if remote.interfaces["F-Mod"] then
-  -- geyser left as is for now
-  config["geyser"] = {
-    type="resource-liquid",
-    minimum_amount=750000000,
+	--yuoki industries mod
+	if remote.interfaces[""] then
+		require("modsupport.yuoki_industries")
+	end
 
-    allotment=0,
-    spawns_per_region={min=1, max=2},
-    richness={min=7500000000, max=7500000000}, -- total richness of site
-    size={min=1, max=2}, -- richness devided by this number
-  }
-  if config["lava-600"] then
-    config["lava-600"].multi_resource["geyser"] = 8
-    config["lava-1400"].multi_resource["geyser"] = 8
-    config["lava-2000"].multi_resource["geyser"] = 8
-  end
-end
-]]--
 end
