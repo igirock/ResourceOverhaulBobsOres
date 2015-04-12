@@ -1,5 +1,5 @@
 require 'defines'
-debug_enabled = true
+debug_enabled = false
 
 
 region_size=7 -- alternative mean to control how further away resources would be, default - 256 tiles or 8 chunks
@@ -10,7 +10,7 @@ override_normal_spawn = false   -- if false then the standard spawner can also s
                                -- set resources you want to control through this config to "None" in worldgen "Size" settings when starting a new game
                                -- changing of this setting requires game restart, i.e. close game and start it again, not actally a new game
 
-override_type = 'partially'    -- 'full' - no spawns by game are allowed, 'partially' - very small patches are spawned by world gen
+override_type = 'full'    -- 'full' - no spawns by game are allowed, 'partially' - very small patches are spawned by world gen
                                -- changing of this setting requires game restart
 
 starting_area_size=1           -- starting area in regions, safe from random nonsense

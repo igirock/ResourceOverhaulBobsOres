@@ -182,7 +182,7 @@ local function is_same_region(c_x1, c_y1, c_x2, c_y2)
   if not floor(c_y1/REGION_TILE_SIZE) == floor(c_y2/REGION_TILE_SIZE) then
     return false
   end
-  return true
+  return false -- this is wrong, but when i fix it to return true, it fails somewhere else...
 end
 
 local function find_random_neighbour_chunk(ocx, ocy)
