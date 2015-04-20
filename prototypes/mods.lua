@@ -1,6 +1,5 @@
 require("prototype_utils")
 
-
 --Road works
 if data.raw["resource"]["RW_limestone"] then
   if is_partial() then
@@ -11,7 +10,6 @@ if data.raw["resource"]["RW_limestone"] then
 end
 
 -- BobOres
-
 if data.raw["resource"]["quartz"] then
   if is_partial() then
     data.raw["resource"]["lead-ore"].autoplace = {max_probability = 0.005}
@@ -33,9 +31,9 @@ if data.raw["resource"]["quartz"] then
     add_peak(data.raw["resource"]["quartz"],{influence=-1000})
     add_peak(data.raw["resource"]["rutile-ore"],{influence=-1000})
     add_peak(data.raw["resource"]["zinc-ore"],{influence=-1000})
-  
   end
 end
+
 -- DyTech
 if data.raw["resource"]["gems"] then
   if is_partial() then
@@ -68,7 +66,8 @@ if data.raw["resource"]["lava-600"] then
     add_peak(data.raw["resource"]["tin-ore"],{influence=-1000})
     add_peak(data.raw["resource"]["tungsten-ore"],{influence=-1000})
     add_peak(data.raw["resource"]["zinc-ore"],{influence=-1000})
-
+    add_peak(data.raw["resource"]["ardite-ore"],{influence=-1000})
+    add_peak(data.raw["resource"]["cobolt-ore"],{influence=-1000})
     --add_peak(data.raw["resource"]["sand"],{influence=-20})
   end
 end
@@ -76,4 +75,33 @@ end
 -- F-Mod
 if data.raw["resource"]["geyser"] then
   --add_peak(data.raw["resource"]["gems"],{influence=-20})
+end
+
+--replicators
+if data.raw["resource"]["rare-earth"] then
+  if is_partial() then
+    data.raw["resource"]["rare-earth"].autoplace = {max_probability = 0.005}
+  else
+    add_peak(data.raw["resource"]["rare-earth"],{influence=-1000})
+  end
+end
+
+--mopower
+if data.raw["resource"]["uranium-ore"] then
+  if is_partial() then
+    data.raw["resource"]["uranium-ore"].autoplace = {max_probability = 0.005}
+  else
+    add_peak(data.raw["resource"]["uranium-ore"],{influence=-1000})
+  end
+end
+
+--uranium power
+if data.raw["resource"]["uraninite"] then
+  if is_partial() then
+    data.raw["resource"]["uraninite"].autoplace = {max_probability = 0.005}
+    data.raw["resource"]["fluorite"].autoplace = {max_probability = 0.005}
+  else
+    add_peak(data.raw["resource"]["uraninite"],{influence=-1000})
+    add_peak(data.raw["resource"]["fluorite"],{influence=-1000})
+  end
 end
