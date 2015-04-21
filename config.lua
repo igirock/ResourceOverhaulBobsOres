@@ -6,7 +6,7 @@ region_size=7 -- alternative mean to control how further away resources would be
               -- each region is region_size*region_size chunks
               -- each chunk is 32*32 tiles
 
-override_normal_spawn = false   -- if false then the standard spawner can also spawn full grown resources/entities,
+override_normal_spawn = true   -- if false then the standard spawner can also spawn full grown resources/entities,
                                -- set resources you want to control through this config to "None" in worldgen "Size" settings when starting a new game
                                -- changing of this setting requires game restart, i.e. close game and start it again, not actally a new game
 
@@ -36,19 +36,19 @@ disable_RSO_biter_spawning = false    -- if true, no biters will be spawned by R
 biter_ratio_segment=1      --the ratio components determining how many biters to spitters will be spawned
 spitter_ratio_segment=1    --eg. 1 and 1 -> equal number of biters and spitters,  10 and 1 -> 10 times as many biters to spitters
 
+--******************RESOURCE CONFIG START****************************************
 config={}
-
 require("modsupport.vanilla")  -- vanilla ore/liquids (no enemies)
 
 --[[ MODS SUPPORT ]]--
-if remote and game then
+if game then
 
 	-- Endless resources mod
 	if endless_resource_mode then
 		require("modsupport.endless_resource_mod")
 	end
 
-	if not remote.interfaces["peacemod"] then  -- if the user has peacemod installed he probably doesn't want that RSO spawns them either.
+	if not game.entityprototypes["alien-ore"] then  -- if the user has peacemod installed he probably doesn't want that RSO spawns them either. remote.interfaces["peacemod"]
 		require("modsupport.vanilla_enemies")  
 	end
 
@@ -61,20 +61,42 @@ if remote and game then
 	-- i moved everything even the checks there, i think it's cleaner this way
 	require("modsupport.dytech")
 
-
 	-- BobOres
-	if remote.interfaces["bobores"] then
+	if game.entityprototypes["tungsten-ore"] then -- check entityprototypes instead of remote.interfaces["bobores"] - this way the load order doesn't matter
 		require("modsupport.bobores")
 	end
 
 	-- peace mod
-	if remote.interfaces["peacemod"] then
+	if game.entityprototypes["alien-ore"] then --check entityprototypes instead of remote.interfaces["peacemod"] - this way the load order doesn't matter
 		require("modsupport.peacemod")
 	end  
 
 	--yuoki industries mod
-	if remote.interfaces[""] then
+	if game.entityprototypes["y-res1"] then  -- check entityprototypes instead of remote.interfaces["yuoki-ind"] - this way the load order doesn't matter
 		require("modsupport.yuoki_industries")
 	end
-
+	
+	--mopower mod
+	if game.entityprototypes["uranium-ore"] then
+		require("modsupport.mopower")
+	end
+	
+	--replicators mod
+  if game.entityprototypes["rare-earth"] then
+		require("modsupport.replicators")
+	end
+	
+	--uranium power mod
+	if game.entityprototypes["uraninite"] then
+		require("modsupport.uraniumpower")
+	end
 end
+
+--*******************IGNORE RESOURCES**********************************+
+-- When RSO finds a resource which is not configured, it prints a message to the user
+-- Some mods use resources which are not autoplaced, and thus shouldn't be placed by RSO either.
+-- To prevent the warning message, you can add the resource names to this table.
+ignoreConfig = {}
+ignoreConfig["clover-patch"] = true -- agrimod
+ignoreConfig["holes"] = true -- F-MOD
+ignoreConfig["greenleaf-ore"] = true -- mofarming

@@ -40,7 +40,7 @@ local max_allotment = 0
 local rgen = nil
 local distance = util.distance
 local spawner_probability_edge = 0  -- below this value a biter spawner, above/equal this value a spitter spawner
-
+local invalidResources = {}
 
 --[[ HELPER METHODS ]]--
 
@@ -355,7 +355,7 @@ local function spawn_resource_ore(rname, pos, size, richness, restrictions)
     debug("Total amount: ".._total)
     for _,v in pairs(_a) do
       --output a nice ASCII map
-      debug(table.concat(v))
+      --debug(table.concat(v))
     end
     debug("Leaving spawn_resource_ore")
   end
@@ -535,7 +535,7 @@ local function spawn_starting_resources()
     end
   end
   glob.start_resources_spawned = true
-  l:dump('logs/start_'..glob.seed..'.log')
+  --l:dump('logs/start_'..glob.seed..'.log')
 end
 
 local function prebuild_config_data()
@@ -544,16 +544,18 @@ local function prebuild_config_data()
   config = {}
 	-- build additional indexed array to the associative array
   for res_name, res_conf in pairs(assoc_config) do
-    res_conf.name = res_name
-    config[#config+1] = res_conf
-    if res_conf.multi_resource then
-      local new_list = {}
-      for sub_res_name, allotment in pairs(res_conf.multi_resource) do
-        new_list[#new_list+1] = {name=sub_res_name, allotment=allotment}
-      end
-      table.sort(new_list, function(a, b) return a.name < b.name end)
-      res_conf.multi_resource = new_list
-    end
+		if res_conf then -- only add it when it's not nil - it may be nil when we see that this resource does no longer exist - see checkConfigForInvalidResources
+			res_conf.name = res_name
+			config[#config+1] = res_conf
+			if res_conf.multi_resource then
+				local new_list = {}
+				for sub_res_name, allotment in pairs(res_conf.multi_resource) do
+					new_list[#new_list+1] = {name=sub_res_name, allotment=allotment}
+				end
+				table.sort(new_list, function(a, b) return a.name < b.name end)
+				res_conf.multi_resource = new_list
+			end
+		end
   end
   table.sort(config, function(a, b) return a.name < b.name end)
   
@@ -594,8 +596,40 @@ local function calculate_spawner_ratio()
   end
 end
 
+local function checkConfigForInvalidResources()
+--make sure that every resource in the config is actually available.
+--call this function, before the auxiliary config is prebuilt!
+	local tempConfig = {}
+	for resourceName, resourceConfig in pairs(config) do
+		if game.entityprototypes[resourceName] then
+			-- resource was in config, but it doesn't exist in game files anymore - remove it
+			
+			tempConfig[resourceName] = resourceConfig
+			
+			-- remove resource from config
+			-- Note: here the config is the associative config still!
+			
+--			assoc_config[resourceName] = nil
+--			local indexToRemove = 0
+--			for index, value in pairs(config) do
+--				if value.name == resourceName then
+--					indexToRemove = index
+--					break
+--				end
+--			end
+--			table.remove(config, indexToRemove)
+		else
+			table.insert(invalidResources, "Resource not available: " .. resourceName)
+			debug("Resource not available: " .. resourceName)
+		end
+	end
+	config = tempConfig
+	
+end
+
 local function init()
   if not glob.regions then glob.regions = {} end
+	checkConfigForInvalidResources()
   prebuild_config_data()
   generate_seed()
   calculate_spawner_ratio()
@@ -904,7 +938,7 @@ local function regenerate_everything()
     end
     i = i + 1
   end
-  l:dump("logs/"..glob.seed..'regenerated.log')
+  --l:dump("logs/"..glob.seed..'regenerated.log')
   game.player.print('Done')
 end
 
@@ -928,6 +962,7 @@ local function printResourceProbability(player)
 	-- prints the probability of each resource - how likely it is to be spawned in percent
 	-- this ignores the multi resource chance
 	player.print("Max allotment"..string.format("%.1f",max_allotment))
+	debug("Max allotment"..string.format("%.1f",max_allotment))
 	local sanityCheckAllotment = 0
 	for index,v in pairs(config) do
 		if v.type ~= "entity" then		-- ignore enemies - they don't have allotment set
@@ -935,8 +970,10 @@ local function printResourceProbability(player)
 				local resProbability = (v.allotment/max_allotment) * 100
 				sanityCheckAllotment = sanityCheckAllotment + v.allotment
 				player.print("Resource: "..v.name.." Prob: "..string.format("%.1f",resProbability))
+				debug("Resource: "..v.name.." Prob: "..string.format("%.1f",resProbability))
 			else
-				player.print("Reousrce: "..v.name.." Allotment not set")
+				player.print("Resource: "..v.name.." Allotment not set")
+				debug("Resource: "..v.name.." Allotment not set")
 			end
 		end
 	end
@@ -945,16 +982,41 @@ local function printResourceProbability(player)
 	
 end
 
+local function IsIgnoreResource(ResourcePrototype)
+	if ignoreConfig[ResourcePrototype.name] then
+	  return true
+	end
+	return false
+end
+
 local function checkForUnusedResources(player)
 -- find all resources and check if we have it in our config
 -- if not, tell the user that this resource won't be spawned (with RSO)
 	for prototypeName, prototype in pairs(game.entityprototypes) do
 		if prototype.type == "resource" then
 			if not assoc_config[prototypeName] then
-				player.print("The resource "..prototypeName.." is not configured in RSO.")
-				player.print("It won't be spawned!")
+				if IsIgnoreResource(prototype) then	-- ignore resources which are not autoplace
+					debug("Resource not configured but ignored (non-autoplace): "..prototypeName)
+				else
+					player.print("The resource "..prototypeName.." is not configured in RSO. It won't be spawned!")
+					debug("Resource not configured: "..prototypeName)
+				end
+			else
+				-- these are the configured ones
+				if IsIgnoreResource(prototype) then
+				  debug("Configured resource (but it is in ignore list - will be used!): " .. prototypeName)
+				else
+					debug("Configured resource: " .. prototypeName)
+				end
 			end
 		end
+	end
+end
+
+local function printInvalidResources(player)
+-- prints all invalid resources which were found when the config was processed.
+	for _, message in pairs(invalidResources) do
+		player.print(message)
 	end
 end
 
@@ -962,10 +1024,12 @@ game.onevent(defines.events.onplayercreated, function(event)
 
 	local player = game.getplayer(event.playerindex)
 	checkForUnusedResources(player)
+	printInvalidResources(player)
 	
 	if debug_enabled then
 		printResourceProbability(player)
 	end
+	l:dump()
 end)
 
 
